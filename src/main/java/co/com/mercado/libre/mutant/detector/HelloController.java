@@ -1,6 +1,6 @@
 package co.com.mercado.libre.mutant.detector;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.InetAddress;
@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 @RestController
 public class HelloController {
 
-    @RequestMapping("/hello")
+    @GetMapping("/hello")
     public String hello() {
         StringBuilder message = new StringBuilder("Hello Google App Engine in mutant detector application!");
         try {
