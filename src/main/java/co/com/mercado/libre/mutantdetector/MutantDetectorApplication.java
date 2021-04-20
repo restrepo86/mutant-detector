@@ -1,4 +1,4 @@
-package co.com.mercado.libre.mutant.detector;
+package co.com.mercado.libre.mutantdetector;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
