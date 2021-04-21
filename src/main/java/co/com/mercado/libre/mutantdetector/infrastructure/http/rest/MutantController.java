@@ -1,4 +1,4 @@
-package co.com.mercado.libre.mutantdetector.controller;
+package co.com.mercado.libre.mutantdetector.infrastructure.http.rest;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
