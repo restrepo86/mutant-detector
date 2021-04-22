@@ -10,7 +10,7 @@ para correr la aplicación en local se deben configurar en el archivo applicatio
 los datos de conexión a base de datos (url, user, password); una vez configurados, se corre 
 el servicio mediante el siguiente comando ejecutado en la raíz del proyecto:
 
-    ./wgradle bootRun
+    ./gradlew bootRun
 
 **Servicios que expone:**
 
