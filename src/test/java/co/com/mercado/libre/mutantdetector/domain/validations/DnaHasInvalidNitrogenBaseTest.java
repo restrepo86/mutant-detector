@@ -4,14 +4,17 @@ import co.com.mercado.libre.mutantdetector.domain.exceptions.InvalidNitrogenBase
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+
+@WebMvcTest
+@ContextConfiguration(classes = { DnaHasInvalidNitrogenBase.class })
 public class DnaHasInvalidNitrogenBaseTest {
 
     @InjectMocks

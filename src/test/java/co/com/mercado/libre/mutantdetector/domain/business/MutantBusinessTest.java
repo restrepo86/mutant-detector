@@ -2,8 +2,10 @@ package co.com.mercado.libre.mutantdetector.domain.business;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +13,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { MutantBusiness.class })
 public class MutantBusinessTest {
 
     @InjectMocks
@@ -46,57 +49,57 @@ public class MutantBusinessTest {
 
     @Test
     public void shouldDetectMutantInDNA() {
-        assertTrue(mutantBusiness.isMutant(mutantDna).block());
+        assertTrue(mutantBusiness.isMutant(mutantDna));
     }
 
     @Test
     public void shouldDetectMutantInDNATestTwo() {
-        assertTrue(mutantBusiness.isMutant(mutantDnaTwo).block());
+        assertTrue(mutantBusiness.isMutant(mutantDnaTwo));
     }
 
     @Test
     public void shouldDetectMutantInDNATestThree() {
-        assertTrue(mutantBusiness.isMutant(mutantDnaThree).block());
+        assertTrue(mutantBusiness.isMutant(mutantDnaThree));
     }
 
     @Test
     public void shouldDetectMutantInDNAFour() {
-        assertTrue(mutantBusiness.isMutant(mutantDnaFour).block());
+        assertTrue(mutantBusiness.isMutant(mutantDnaFour));
     }
 
     @Test
     public void shouldDetectMutantInDNAFive() {
-        assertTrue(mutantBusiness.isMutant(mutantDnaFive).block());
+        assertTrue(mutantBusiness.isMutant(mutantDnaFive));
     }
 
     @Test
     public void shouldDetectMutantInDNASix() {
-        assertTrue(mutantBusiness.isMutant(mutantDnaSix).block());
+        assertTrue(mutantBusiness.isMutant(mutantDnaSix));
     }
 
     @Test
     public void shouldDetectMutantInDNASeven() {
-        assertTrue(mutantBusiness.isMutant(mutantDnaSeven).block());
+        assertTrue(mutantBusiness.isMutant(mutantDnaSeven));
     }
 
     @Test
     public void shouldDetectMutantInDNAEight() {
-        assertTrue(mutantBusiness.isMutant(mutantDnaEight).block());
+        assertTrue(mutantBusiness.isMutant(mutantDnaEight));
     }
 
     @Test
     public void shouldDetectMutantInDNANine() {
-        assertTrue(mutantBusiness.isMutant(mutantDnaNine).block());
+        assertTrue(mutantBusiness.isMutant(mutantDnaNine));
     }
 
     @Test
     public void shouldDetectMutantInDNATen() {
-        assertTrue(mutantBusiness.isMutant(mutantDnaTen).block());
+        assertTrue(mutantBusiness.isMutant(mutantDnaTen));
     }
 
     @Test
     public void shouldDetectHumanInDNA() {
-        assertFalse(mutantBusiness.isMutant(humanDna).block());
+        assertFalse(mutantBusiness.isMutant(humanDna));
     }
 
 }

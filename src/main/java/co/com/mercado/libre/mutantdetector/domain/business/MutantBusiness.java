@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MutantBusiness {
 
-    public Mono<Boolean> isMutant(List<String> dna) {
+    public Boolean isMutant(List<String> dna) {
         List<String> dnaReverseOrder = dna
                 .stream()
                 .map(dnaRow -> new StringBuilder(dnaRow)
@@ -23,7 +23,7 @@ public class MutantBusiness {
         hasMutantDna.add(matrixHasMutantLettersInY(dna));
         hasMutantDna.add(matrixHasMutantLettersInObliqueAxis(dna));
         hasMutantDna.add(matrixHasMutantLettersInObliqueAxis(dnaReverseOrder));
-        return Mono.justOrEmpty(hasMutantDna.stream().anyMatch(Boolean::booleanValue));
+        return hasMutantDna.stream().anyMatch(Boolean::booleanValue);
     }
 
     private boolean matrixHasMutantLettersInY(List<String> dna) {
