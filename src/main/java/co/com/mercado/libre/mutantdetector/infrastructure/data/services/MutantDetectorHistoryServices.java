@@ -3,6 +3,7 @@ package co.com.mercado.libre.mutantdetector.infrastructure.data.services;
 import co.com.mercado.libre.mutantdetector.domain.dto.MutanDetectorDTO;
 import co.com.mercado.libre.mutantdetector.infrastructure.data.entities.MutantDetectorHistoryEntity;
 import co.com.mercado.libre.mutantdetector.infrastructure.data.repository.MutantDetectorHistoryRepository;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.util.Date;
@@ -37,4 +38,18 @@ public class MutantDetectorHistoryServices {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public Long countHumanDna() {
+        return getCountMutant(false);
+    }
+
+    private Long getCountMutant(boolean mutant) {
+        return mutantDetectorHistoryRepository.findByMutant(mutant)
+                .stream().count();
+    }
+
+    @Transactional(readOnly = true)
+    public Long countMutantDna() {
+        return getCountMutant(true);
+    }
 }

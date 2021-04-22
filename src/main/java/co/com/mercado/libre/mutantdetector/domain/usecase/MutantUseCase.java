@@ -2,6 +2,7 @@ package co.com.mercado.libre.mutantdetector.domain.usecase;
 
 import co.com.mercado.libre.mutantdetector.domain.business.MutantBusiness;
 import co.com.mercado.libre.mutantdetector.domain.dto.MutanDetectorDTO;
+import co.com.mercado.libre.mutantdetector.domain.dto.StatsDTO;
 import co.com.mercado.libre.mutantdetector.domain.exceptions.InvalidRequestException;
 import co.com.mercado.libre.mutantdetector.domain.validations.Validations;
 import co.com.mercado.libre.mutantdetector.infrastructure.data.services.MutantDetectorHistoryServices;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -53,6 +55,16 @@ public class MutantUseCase {
         return MutanDetectorDTO.builder()
                 .dna(new Gson().toJson(dna))
                 .mutant(mutant)
+                .build();
+    }
+
+    public StatsDTO stats() {
+        Long countHumanDna = mutantDetectorHistoryServices.countHumanDna();
+        Long countMutantDna = mutantDetectorHistoryServices.countMutantDna();
+        return StatsDTO.builder()
+                .countMutantDna(countMutantDna)
+                .countHumanDna(countHumanDna)
+                .ratio(BigDecimal.valueOf(countMutantDna.doubleValue() / countHumanDna.doubleValue()))
                 .build();
     }
 }
