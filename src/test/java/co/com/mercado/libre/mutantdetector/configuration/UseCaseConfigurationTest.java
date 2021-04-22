@@ -2,6 +2,7 @@ package co.com.mercado.libre.mutantdetector.configuration;
 
 import co.com.mercado.libre.mutantdetector.domain.business.MutantBusiness;
 import co.com.mercado.libre.mutantdetector.domain.validations.Validations;
+import co.com.mercado.libre.mutantdetector.infrastructure.data.services.MutantDetectorHistoryServices;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,9 +22,12 @@ public class UseCaseConfigurationTest {
     @MockBean
     private Validations validations;
 
+    @MockBean
+    private MutantDetectorHistoryServices mutantDetectorHistoryServices;
+
     @Test
     public void shouldBuildMutantUseCase() {
-        useCaseConfiguration.buildMutantUseCase(mutantBusiness, validations);
+        useCaseConfiguration.buildMutantUseCase(mutantBusiness, validations, mutantDetectorHistoryServices);
     }
 
 }

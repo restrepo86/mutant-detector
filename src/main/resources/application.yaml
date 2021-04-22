@@ -10,11 +10,11 @@ spring:
     driver-class-name: org.postgresql.Driver
     platform: postgres
   flyway:
-    enabled: false
+    enabled: true
   jpa:
     database: POSTGRESQL
     open-in-view: false
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

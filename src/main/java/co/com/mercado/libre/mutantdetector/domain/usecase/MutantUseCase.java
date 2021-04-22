@@ -1,8 +1,11 @@
 package co.com.mercado.libre.mutantdetector.domain.usecase;
 
 import co.com.mercado.libre.mutantdetector.domain.business.MutantBusiness;
+import co.com.mercado.libre.mutantdetector.domain.dto.MutanDetectorDTO;
 import co.com.mercado.libre.mutantdetector.domain.exceptions.InvalidRequestException;
 import co.com.mercado.libre.mutantdetector.domain.validations.Validations;
+import co.com.mercado.libre.mutantdetector.infrastructure.data.services.MutantDetectorHistoryServices;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,10 +17,12 @@ public class MutantUseCase {
 
     private final MutantBusiness mutantBusiness;
     private final Validations validations;
+    private final MutantDetectorHistoryServices mutantDetectorHistoryServices;
 
-    public MutantUseCase(MutantBusiness mutantBusiness, Validations validations) {
+    public MutantUseCase(MutantBusiness mutantBusiness, Validations validations, MutantDetectorHistoryServices mutantDetectorHistoryServices) {
         this.mutantBusiness = mutantBusiness;
         this.validations = validations;
+        this.mutantDetectorHistoryServices = mutantDetectorHistoryServices;
     }
 
     public void validateDna(List<String> dna) {
@@ -35,10 +40,19 @@ public class MutantUseCase {
     }
 
     private void isMutant(List<String> dna) {
-        if (mutantBusiness.isMutant(dna)) {
+        boolean mutant = mutantBusiness.isMutant(dna);
+        mutantDetectorHistoryServices.save(buildMutantDetectorDTO(dna, mutant));
+        if (mutant) {
             throw new ResponseStatusException(HttpStatus.OK, "dna belongs to mutant!");
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "dna belongs to human!");
         }
+    }
+
+    private MutanDetectorDTO buildMutantDetectorDTO(List<String> dna, boolean mutant) {
+        return MutanDetectorDTO.builder()
+                .dna(new Gson().toJson(dna))
+                .mutant(mutant)
+                .build();
     }
 }
