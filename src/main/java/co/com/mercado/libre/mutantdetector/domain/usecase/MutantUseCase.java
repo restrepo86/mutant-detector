@@ -17,6 +17,8 @@ import java.util.List;
 @Slf4j
 public class MutantUseCase {
 
+    private static final String SORRY_SOMETHING_HAS_GONE_WRONG_PLEASE_TRY_AGAIN = "sorry, something has gone wrong, please try again";
+
     private final MutantBusiness mutantBusiness;
     private final Validations validations;
     private final MutantDetectorHistoryServices mutantDetectorHistoryServices;
@@ -36,9 +38,13 @@ public class MutantUseCase {
         } catch (InvalidRequestException invalidRequestException) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, invalidRequestException.getMessage());
         } catch (Exception exception) {
-            log.error("Internal error cause -> ", exception);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "sorry, something has gone wrong, please try again");
+            throwInternalError(exception);
         }
+    }
+
+    private void throwInternalError(Exception exception) {
+        log.error("Internal error cause -> ", exception);
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, SORRY_SOMETHING_HAS_GONE_WRONG_PLEASE_TRY_AGAIN);
     }
 
     private void isMutant(List<String> dna) {
@@ -59,12 +65,27 @@ public class MutantUseCase {
     }
 
     public StatsDTO stats() {
-        Long countHumanDna = mutantDetectorHistoryServices.countHumanDna();
-        Long countMutantDna = mutantDetectorHistoryServices.countMutantDna();
-        return StatsDTO.builder()
-                .countMutantDna(countMutantDna)
-                .countHumanDna(countHumanDna)
-                .ratio(BigDecimal.valueOf(countMutantDna.doubleValue() / countHumanDna.doubleValue()))
-                .build();
+        StatsDTO statsDTO = null;
+        try {
+            Long countHumanDna = mutantDetectorHistoryServices.countHumanDna();
+            Long countMutantDna = mutantDetectorHistoryServices.countMutantDna();
+            validateHumanDnaDetected(countHumanDna);
+            statsDTO = StatsDTO.builder()
+                    .countMutantDna(countMutantDna)
+                    .countHumanDna(countHumanDna)
+                    .ratio(BigDecimal.valueOf(countMutantDna.doubleValue() / countHumanDna.doubleValue()))
+                    .build();
+        } catch (ResponseStatusException responseStatusException) {
+            throw responseStatusException;
+        } catch (Exception exception) {
+            throwInternalError(exception);
+        }
+        return statsDTO;
+    }
+
+    private void validateHumanDnaDetected(Long countHumanDna) {
+        if (countHumanDna == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "there are not enough values to find the radius, since human DNA has not been detected yet");
+        }
     }
 }
