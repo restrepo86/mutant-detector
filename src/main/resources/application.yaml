@@ -4,8 +4,6 @@ server:
 
 spring:
   datasource:
-    #url: jdbc:postgresql://localhost:5432/planillas?currentSchema=mutant-detector
-    #url: jdbc:postgresql://snappy-catcher-311002:us-east1:mutant-detector
     username: postgres
     password: mutant
     driver-class-name: org.postgresql.Driver
@@ -13,6 +11,7 @@ spring:
     continue-on-error: true
     initialization-mode: always
   cloud:
+    appId: mutant-detector-app
     gcp:
       sql:
         database-name: postgres
