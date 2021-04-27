@@ -65,3 +65,20 @@ Esta api expone 2 servicios REST:
             "countHumanDna": 1,
             "ratio": 2.0
         }    
+        
+    Las posibles respuestas del API son:
+
+        BAD_REQUEST(400) -> En caso de que existan errores en los datos de entrada con 
+        un mensaje descriptivo en el atributo "message" del response body
+
+        OK(200) -> Cuando es respuesta exitosa con el siguiente JSON -> 
+
+            {
+                "countMutantDna": 2, //Número de ADN distinto evaluado para mutantes.
+                "countHumanDna": 1, //Número de ADN distinto evaluado para humanos.
+                "ratio": 2.0 //Estadística de ADN mutante por ADN humano encontrado.
+            }   
+
+        INTERNAL_SERVER_ERROR, "sorry, something has gone wrong, please try again" -> En caso
+        de que exista un error no controlado.
+        
