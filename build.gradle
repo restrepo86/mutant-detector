@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.4.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'com.google.cloud.tools.appengine' version '2.4.1'
 	id 'java'
 	id 'war'
 }
@@ -11,6 +12,7 @@ sourceCompatibility = '1.8'
 
 configurations {
 	compileOnly {
+
 		extendsFrom annotationProcessor
 	}
 }
@@ -49,6 +51,12 @@ dependencyManagement {
 	}
 }
 
+appengine {
+	deploy {
+		version = "GCLOUD_CONFIG"
+		projectId = "GCLOUD_CONFIG"
+	}
+}
 
 test {
 	useJUnitPlatform()
