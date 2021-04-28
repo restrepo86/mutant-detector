@@ -18,7 +18,7 @@ Esta api expone 2 servicios REST:
 
 - Servicio para validar ADN mutante:
 
-    url: {SERVER_HOST:SERVER_PORT}/mutant
+    url: https://20210427t204528-dot-snappy-catcher-311002.ue.r.appspot.com/mutant/
     método http: @POST
   
     Request body de ejemplo:
@@ -54,7 +54,7 @@ Esta api expone 2 servicios REST:
 
 - Servicio para validar estadísticas de ADN analizado y encontrado:
 
-    url: {SERVER_HOST:SERVER_PORT}/stats
+    url: https://20210427t204528-dot-snappy-catcher-311002.ue.r.appspot.com/stats/
   
     método http: @GET
   
