@@ -1,0 +1,23 @@
+server:
+  host: ${APP_SERVER_HOST}
+  port: ${APP_SERVER_PORT}
+spring:
+  application:
+    name: ${PROJECT_NAME}
+  webflux:
+    base-path: /base/project
+  devtools:
+    add-properties: ${SPRING_APPLICATION_DEVTOOLS_ADD_PROPERTIES}
+  profiles:
+    include: null
+  r2dbc:
+    url: "r2dbc:${BD_PROJECT_URL}"
+    username: ${DB_PROJECT_USERNAME}
+    password: ${DB_PROJECT_PASSWORD}
+    driver-class-name: ${DB_R2DBC_DRIVER_CLASS_NAME}
+  flyway:
+    enabled: ${FLYWAY_ENABLED}
+    url: "jdbc:${BD_PROJECT_URL}"
+    user: ${spring.r2dbc.username}
+    password: ${spring.r2dbc.password}
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE}

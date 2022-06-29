@@ -1,63 +1,39 @@
+buildscript {
+	ext {
+		cleanArchitectureVersion = '1.9.8'
+		springBootVersion = '2.4.2'
+		sonarVersion = '3.0'
+		jacocoVersion = '0.8.5'
+        lombokVersion = '1.18.16'
+		springCloudVersion = 'Greenwich.SR5'
+		junitBomVersion = '5.8.1'
+		junitPlatformRunner = '1.2.0'
+		junitJupiterEngine = '5.6.1'
+		junitVintageEngine = '5.6.1'
+		mockitoCoreVersion = '2.21.0'
+		mockitoJunitJupiter = '2.23.0'
+		flywayVersion = '8.0.5'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/milestone" }
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://plugins.gradle.org/m2/" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
 plugins {
-	id 'org.springframework.boot' version '2.4.0'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'com.google.cloud.tools.appengine' version '2.4.1'
+	id 'co.com.bancolombia.cleanArchitecture' version "${cleanArchitectureVersion}"
+	id 'org.springframework.boot' version "${springBootVersion}" apply false
+	id "io.spring.dependency-management"  version "1.0.11.RELEASE"
+	id 'org.sonarqube' version "${sonarVersion}"
+	id 'jacoco'
 	id 'java'
-	id 'war'
+	id 'application'
 }
 
-group = 'co.com.mercado.libre'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-
-configurations {
-	compileOnly {
-
-		extendsFrom annotationProcessor
-	}
-}
-
-repositories {
-	mavenCentral()
-}
-
-ext {
-	set('springCloudGcpVersion', "2.0.0")
-	set('springCloudVersion', "2020.0.2")
-}
-
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'com.google.cloud:spring-cloud-gcp-starter'
-	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-starter-sql-postgresql', version: '2.0.2'
-	implementation 'com.google.cloud.tools:appengine-gradle-plugin:2.4.1'
-	implementation 'org.flywaydb:flyway-core'
-	compile 'org.postgresql:postgresql:42.2.12'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testCompile 'org.springframework.boot:spring-boot-test-autoconfigure'
-	testImplementation 'io.projectreactor:reactor-test'
-	testImplementation group: 'junit', name: 'junit', version: '4.13.2'
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
-}
-
-appengine {
-	deploy {
-		version = "GCLOUD_CONFIG"
-		projectId = "GCLOUD_CONFIG"
-	}
-}
-
-test {
-	useJUnitPlatform()
-}
+apply from: './sonar.gradle'
+apply from: './main.gradle'

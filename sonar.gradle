@@ -1,0 +1,20 @@
+apply plugin: "org.sonarqube"
+
+sonarqube {
+    def modules = subprojects.projectDir.collect { "${it.toString().replace(project.projectDir.toString() + "/", "")}" }
+    properties {
+        property 'sonar.projectName', "${project_name}"
+        property 'sonar.projectKey', "${group}.${project_name}"
+        property "sonar.projectVersion","${version}"
+        property "sonar.sourceEncoding", "${sonar_encoding}"
+        property "sonar.modules", "${modules.join(',')}"
+        property "sonar.sources", "src,deployment,settings.gradle,main.gradle,build.gradle,${modules.collect { "${it}/build.gradle" }.join(',')}"
+        property "sonar.java.source", "11"
+        property "sonar.test", "src/test"
+        property "sonar.java.binaries", ""
+        property "sonar.junit.reportsPath", ""
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacocoMergedReport/jacocoMergedReport.xml"
+        property "sonar.exclusions", "${sonar_coverage_exclusions}"
+    }
+}

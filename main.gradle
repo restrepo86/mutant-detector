@@ -1,0 +1,120 @@
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+    apply plugin: "io.spring.dependency-management"
+
+    compileJava.dependsOn processResources
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+        compile {
+            exclude module: "spring-boot-starter-logging"
+        }
+    }
+
+    dependencies {
+        ext['log4j2.version'] = '2.17.1'
+        implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        implementation(platform("org.apache.logging.log4j:log4j-bom:2.17.1"))
+        implementation 'org.springframework.boot:spring-boot-starter-webflux'
+        implementation 'io.projectreactor.addons:reactor-extra'
+        implementation 'io.projectreactor:reactor-core'
+        implementation 'io.projectreactor:reactor-tools'
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor  "org.projectlombok:lombok:${lombokVersion}"
+        testCompileOnly  "org.projectlombok:lombok:${lombokVersion}"
+        testAnnotationProcessor  "org.projectlombok:lombok:${lombokVersion}"
+        testImplementation 'io.projectreactor:reactor-test'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+    }
+
+    test.finalizedBy(project.tasks.jacocoTestReport)
+    jacocoTestReport.finalizedBy(project.tasks.jacocoTestCoverageVerification)
+
+    jacocoTestReport {
+        dependsOn test
+        reports {
+            xml.required = true
+            xml.destination file("${buildDir}/reports/jacoco.xml")
+            csv.required = false
+            html.destination file("${buildDir}/reports/jacocoHtml")
+        }
+    }
+
+    jacocoTestCoverageVerification {
+        afterEvaluate {
+            classDirectories.from = files(classDirectories.files.collect {
+                fileTree(dir: it,
+                    exclude: [
+                            "${sonar_coverage_exclusions}"
+                    ]
+                )
+            })
+        }
+        violationRules {
+            rule {
+                limit {
+                    minimum = 0
+                }
+            }
+        }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+}
+
+jacoco {
+    toolVersion = "${jacocoVersion}"
+    reportsDirectory = file("$buildDir/reports")
+}
+
+task jacocoMergedReport(type: JacocoReport) {
+    dependsOn = subprojects.jacocoTestReport
+    additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.setFrom files(subprojects.sourceSets.main.output)
+    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
+    reports {
+        xml.required = true
+        csv.required = false
+        html.required = true
+    }
+}
+
+tasks.withType(JavaCompile) {
+    configure(options) {
+        options.compilerArgs = [
+                '-Xlint:unchecked', '-Amapstruct.suppressGeneratorTimestamp=true'
+        ]
+
+    }
+}
+tasks.named('wrapper') {
+  gradleVersion = '7.2'
+}
