@@ -10,7 +10,8 @@ public enum ApplicationCodesEnum {
     INVALID_NITROGEN_BASE_EXCEPTION("5", UseCaseEnum.DETECT_MUTANT, "The Nitrogen base it must be A, G, T, C, in capital letters", 400),
     INVALID_SIZE_DNA_EXCEPTION("6", UseCaseEnum.DETECT_MUTANT, "The DNA size is invalid, because it must be N x N matrix and N > 3", 400),
     DNA_MUTANT("7", UseCaseEnum.DETECT_MUTANT, "dna belongs to mutant!", 201),
-    DNA_HUMAN("8", UseCaseEnum.DETECT_MUTANT, "dna belongs to human!", 201);
+    DNA_HUMAN("8", UseCaseEnum.DETECT_MUTANT, "dna belongs to human!", 201),
+    INVALID_STATS("9", UseCaseEnum.GET_STATS, "there are not enough values to find the radius, since human DNA has not been detected yet", 400);
 
 
     public static final String SEPARATOR = "-";

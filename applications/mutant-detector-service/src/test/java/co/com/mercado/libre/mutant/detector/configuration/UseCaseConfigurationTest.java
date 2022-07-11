@@ -7,6 +7,7 @@ import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.Dn
 import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.DnaIsNullOrEmpty;
 import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.Validations;
 import co.com.mercado.libre.mutant.detector.usecase.mutant.gateways.persistence.IMutantDetectorHistoryServices;
+import co.com.mercado.libre.mutant.detector.usecase.mutant.stats.GetStatsUseCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,6 +37,9 @@ class UseCaseConfigurationTest {
 
     @Mock
     private DnaHasInvalidSize dnaHasInvalidSize;
+
+    @Mock
+    private IMutantDetectorHistoryServices mutantDetectorHistoryServices;
 
     @Test
     void shouldBuildValidator() {
@@ -73,6 +77,12 @@ class UseCaseConfigurationTest {
     void shouldBuildDnaHasInvalidNitrogenBase() {
         DnaHasInvalidNitrogenBase dnaHasInvalidNitrogenBase = useCaseConfiguration.buildDnaHasInvalidNitrogenBase();
         assertNotNull(dnaHasInvalidNitrogenBase);
+    }
+
+    @Test
+    void shouldBuildMutantStatsUseCase() {
+        GetStatsUseCase getStatsUseCase = useCaseConfiguration.buildMutantStatsUseCase(mutantDetectorHistoryServices);
+        assertNotNull(getStatsUseCase);
     }
 
 }

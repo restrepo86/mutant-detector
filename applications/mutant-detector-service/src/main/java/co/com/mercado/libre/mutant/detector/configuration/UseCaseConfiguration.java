@@ -7,6 +7,7 @@ import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.Dn
 import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.DnaIsNullOrEmpty;
 import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.Validations;
 import co.com.mercado.libre.mutant.detector.usecase.mutant.gateways.persistence.IMutantDetectorHistoryServices;
+import co.com.mercado.libre.mutant.detector.usecase.mutant.stats.GetStatsUseCase;
 import lombok.val;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,5 +49,10 @@ public class UseCaseConfiguration {
     @Bean
     public DnaHasInvalidNitrogenBase buildDnaHasInvalidNitrogenBase() {
         return new DnaHasInvalidNitrogenBase();
+    }
+
+    @Bean
+    public GetStatsUseCase buildMutantStatsUseCase(IMutantDetectorHistoryServices mutantDetectorHistoryServices) {
+        return new GetStatsUseCase(mutantDetectorHistoryServices);
     }
 }
