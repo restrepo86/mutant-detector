@@ -31,8 +31,7 @@ public class DetectMutantUseCase implements IDetectMutantUseCase {
                         .flatMap(isMutant -> iMutantDetectorHistoryServices.save(buildMutantDetectorDTO(dna.getDna(), isMutant))))
                 .flatMap(mutantDetectorDTO -> mutantDetectorDTO.isMutant() ?
                         Mono.error(new UseCaseException(ApplicationCodesEnum.DNA_MUTANT)) :
-                        Mono.error(new UseCaseException(ApplicationCodesEnum.DNA_HUMAN))
-                );
+                        Mono.error(new UseCaseException(ApplicationCodesEnum.DNA_HUMAN)));
     }
 
     private MutantDetectorDTO buildMutantDetectorDTO(List<String> dna, boolean mutant) {

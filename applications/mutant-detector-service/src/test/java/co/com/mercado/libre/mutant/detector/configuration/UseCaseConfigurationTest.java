@@ -1,8 +1,12 @@
 package co.com.mercado.libre.mutant.detector.configuration;
 
-import co.com.mercado.libre.mutant.detector.usecase.mutant.gateways.persistence.IMutantDetectorHistoryServices;
 import co.com.mercado.libre.mutant.detector.model.mutant.gateways.IMutantBusinessGateway;
 import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.DetectMutantUseCase;
+import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.DnaHasInvalidNitrogenBase;
+import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.DnaHasInvalidSize;
+import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.DnaIsNullOrEmpty;
+import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.validations.Validations;
+import co.com.mercado.libre.mutant.detector.usecase.mutant.gateways.persistence.IMutantDetectorHistoryServices;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +28,15 @@ class UseCaseConfigurationTest {
     @Mock
     private IMutantDetectorHistoryServices iMutantDetectorHistoryServices;
 
+    @Mock
+    private DnaIsNullOrEmpty dnaIsNullOrEmpty;
+
+    @Mock
+    private DnaHasInvalidNitrogenBase dnaHasInvalidNitrogenBase;
+
+    @Mock
+    private DnaHasInvalidSize dnaHasInvalidSize;
+
     @Test
     void shouldBuildValidator() {
         LocalValidatorFactoryBean localValidatorFactoryBean
@@ -36,6 +49,30 @@ class UseCaseConfigurationTest {
         DetectMutantUseCase detectMutantUseCase =
                 useCaseConfiguration.buildDetectMutantUseCase(iMutantBusinessGateway, iMutantDetectorHistoryServices);
         assertNotNull(detectMutantUseCase);
+    }
+
+    @Test
+    void shouldBuildValidations() {
+        Validations validations = useCaseConfiguration.buildValidations(dnaIsNullOrEmpty, dnaHasInvalidSize, dnaHasInvalidNitrogenBase);
+        assertNotNull(validations);
+    }
+
+    @Test
+    void shouldBuildDnaIsNullOrEmpty() {
+        DnaIsNullOrEmpty dnaIsNullOrEmpty = useCaseConfiguration.buildDnaIsNullOrEmpty();
+        assertNotNull(dnaIsNullOrEmpty);
+    }
+
+    @Test
+    void shouldBuildDnaHasInvalidSize() {
+        DnaHasInvalidSize dnaHasInvalidSize = useCaseConfiguration.buildDnaHasInvalidSize();
+        assertNotNull(dnaHasInvalidSize);
+    }
+
+    @Test
+    void shouldBuildDnaHasInvalidNitrogenBase() {
+        DnaHasInvalidNitrogenBase dnaHasInvalidNitrogenBase = useCaseConfiguration.buildDnaHasInvalidNitrogenBase();
+        assertNotNull(dnaHasInvalidNitrogenBase);
     }
 
 }

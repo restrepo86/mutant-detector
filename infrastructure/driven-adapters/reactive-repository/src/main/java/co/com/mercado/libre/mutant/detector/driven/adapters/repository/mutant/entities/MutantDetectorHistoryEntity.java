@@ -7,6 +7,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -14,7 +15,7 @@ import java.util.Date;
 public class MutantDetectorHistoryEntity {
 
     @Builder(toBuilder = true)
-    public MutantDetectorHistoryEntity(String dna, Boolean mutant, Date creationDate) {
+    public MutantDetectorHistoryEntity(String dna, Boolean mutant, LocalDateTime creationDate) {
         this.dna = dna;
         this.mutant = mutant;
         this.creationDate = creationDate;
@@ -31,6 +32,6 @@ public class MutantDetectorHistoryEntity {
     private Boolean mutant;
 
     @Column(value = "creation_date")
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
 }

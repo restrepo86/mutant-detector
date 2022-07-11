@@ -25,4 +25,10 @@ class BusinessConfigurationTest {
         assertNotNull(mutantBusiness);
     }
 
+    @Test
+    void shouldBuildIsMutantRules() {
+        IsMutant isMutant = businessConfiguration.buildIsMutant();
+        assertNotNull(isMutant);
+    }
+
 }

@@ -4,7 +4,7 @@ import co.com.mercado.libre.mutant.detector.driven.adapters.repository.mutant.en
 import co.com.mercado.libre.mutant.detector.driven.adapters.repository.mutant.mappers.IMutantDetectorHistoryEntityMapper;
 import co.com.mercado.libre.mutant.detector.usecase.mutant.detect.dto.MutantDetectorDTO;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class MutantDetectorHistoryEntityMapper implements IMutantDetectorHistoryEntityMapper {
 
@@ -13,7 +13,7 @@ public class MutantDetectorHistoryEntityMapper implements IMutantDetectorHistory
         return MutantDetectorHistoryEntity.builder()
                 .dna(mutantDetectorDTO.getDna())
                 .mutant(mutantDetectorDTO.isMutant())
-                .creationDate(new Date())
+                .creationDate(LocalDateTime.now())
                 .build();
     }
 
