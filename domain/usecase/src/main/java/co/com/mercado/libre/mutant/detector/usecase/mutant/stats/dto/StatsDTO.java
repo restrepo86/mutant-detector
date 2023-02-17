@@ -1,4 +1,4 @@
-package co.com.mercado.libre.mutant.detector.usecase.mutant.detect.dto;
+package co.com.mercado.libre.mutant.detector.usecase.mutant.stats.dto;
 
 import lombok.*;
 

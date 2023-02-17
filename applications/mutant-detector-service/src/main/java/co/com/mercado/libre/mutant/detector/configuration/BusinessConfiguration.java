@@ -13,4 +13,8 @@ public class BusinessConfiguration {
         return new MutantBusiness(isMutant);
     }
 
+    @Bean
+    public IsMutant buildIsMutant() {
+        return new IsMutant();
+    }
 }
