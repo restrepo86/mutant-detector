@@ -1,0 +1,18 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+	implementation project(':reactive-repository')
+    implementation project(':model')
+    implementation project(':usecase')
+    implementation project(':business')
+    implementation project(':reactive-web')
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.5.6'
+    implementation "org.flywaydb:flyway-core:${flywayVersion}"
+}
+
+
+task explodedJar(type: Copy) {
+    with jar
+    into "${buildDir}/exploded"
+}

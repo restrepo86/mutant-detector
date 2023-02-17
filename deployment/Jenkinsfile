@@ -1,0 +1,130 @@
+pipeline {
+
+	agent any
+
+	environment {
+  		BRANCH 			                            = 'develop'
+		PROJECT_PATH	                            = 'secretaria-de-las-tic/arquitecturas-solucion/arquitectura-de-solucion-limpia'
+		PASS_REGISTRY			                    = credentials('registry-gitlab-pass')
+		MEM_RAM_CONTAINER_LIMIT                     = "700m"
+		CPU_SET_CONTAINER                           = '1'
+		APP_CONTAINER_EXTERNAL_PORT                 = '8182'
+		APP_CONTAINER_RESTART                       = "always"
+		DB_CONTAINER_EXTERNAL_PORT                  = '5432'
+		DB_INTERNAL_PORT                            = '5432'
+		DB_CONTAINER_RESTART                        = "always"
+		DB_LOGGING_MAX_SIZE                         = "50m"
+		APP_LOGGING_MAX_SIZE                        = "50m"
+		DB_SHM_SIZE                                 = "256MB"
+
+		PROJECT_NAME			                    = 'mutant-detector'
+		APP_SERVER_HOST                             = 'localhost'
+		APP_SERVER_PORT                             = '8182'
+		VERSION                                     = '0.1.1'
+		BD_PROJECT_URL                              = "postgresql://db:5432/postgres"
+		DB_PROJECT_PASSWORD                         = credentials('mutant-detector-db-password')
+		DB_PROJECT_USERNAME                         = "postgres"
+		DB_R2DBC_DRIVER_CLASS_NAME                  = "org.postgresql.Driver"
+		SPRING_APPLICATION_DEVTOOLS_ADD_PROPERTIES  = "false"
+		FLYWAY_ENABLED                              = "true"
+		FLYWAY_BASELINE_ON_MIGRATE                  = "true"
+		APP_TIME_ZONE                               = "America/Bogota"
+    }
+
+	stages {
+
+		 stage('GET SOURCE CODE') {
+            steps {
+                checkout(
+                    [
+                        $class: 'GitSCM',
+                        branches: [[name: "*/${BRANCH}"]],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [],
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[
+                            credentialsId: 'ssh-gitlab-gobant',
+                            url: "${GIT_DNS}/${PROJECT_PATH}.git"
+                        ]]
+                    ]
+                );
+            }
+        }
+
+        stage('BUILD_JAR') {
+			steps {
+				sh  '''
+				    export ORG_GRADLE_PROJECT_version="${VERSION}.${BUILD_NUMBER}"
+				    ./gradlew clean build jacocoMergedReport --build-cache
+				    '''
+			}
+			post {
+                success {
+                    archiveArtifacts artifacts: "applications/${PROJECT_NAME}-service/build/libs/*.jar", fingerprint: true
+                }
+            }
+        }
+
+        stage('RUN_SONARQUBE') {
+            steps {
+                dir("${WORKSPACE}") {
+                    withSonarQubeEnv(installationName: 'sonarqube-gobant') {
+                        sh './gradlew sonarqube'
+                    }
+                }
+            }
+            post {
+                success {
+                    timeout(time: 20, unit: 'SECONDS') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
+        }
+
+		stage('BUILD_IMAGE') {
+			steps {
+				sh  '''
+					echo "########################"
+					echo "**** Building image ****"
+					echo "########################"
+					cp -f applications/${PROJECT_NAME}-service/build/libs/*.jar deployment/
+					echo "*** Tagging image ***"
+                    docker build -t ${REGISTRY}/${PROJECT_PATH}/${PROJECT_NAME}:${VERSION}.${BUILD_NUMBER} deployment/
+					'''
+			}
+		}
+
+		stage('UPLOAD_IMAGE') {
+			steps {
+				sh  '''
+					echo "########################"
+					echo "***** Upload Image *****"
+					echo "########################"
+					echo "*** Logging in ***"
+					docker login -u $USER_REGISTRY -p $PASS_REGISTRY $REGISTRY
+					echo "*** Pushing image ***"
+					docker push ${REGISTRY}/${PROJECT_PATH}/${PROJECT_NAME}:${VERSION}.${BUILD_NUMBER}
+					'''
+			}
+		}
+
+		stage('STOP_PREVIOUS_CONTAINER_VERSION') {
+            steps {
+                sh  '''
+                    chmod +x deployment/stop_containers_app.sh
+                    ./deployment/stop_containers_app.sh
+                    '''
+            }
+        }
+
+		stage('DEPLOY') {
+		    steps {
+		        sh  '''
+		            docker login -u $USER_REGISTRY -p $PASS_REGISTRY $REGISTRY
+		            cd deployment && docker-compose up -d
+		            '''
+		    }
+		}
+    }
+}

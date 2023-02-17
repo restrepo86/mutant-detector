@@ -27,3 +27,12 @@ HELP.md
 
 ### Gradle ###
 .gradle
+
+domain/model/build/
+domain/usecase/build/
+domain/business/build/
+infrastructure/driven-adapters/reactive-repository/build/
+infrastructure/entry-points/reactive-web/build/
+applications/mutant-detector-service/build/
+
+

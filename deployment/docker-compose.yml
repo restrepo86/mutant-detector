@@ -1,0 +1,63 @@
+version: '3.5'
+services:
+  app:
+    container_name: "${PROJECT_NAME}-${VERSION}.${BUILD_NUMBER}"
+    image: "${REGISTRY}/${PROJECT_PATH}/${PROJECT_NAME}:${VERSION}.${BUILD_NUMBER}"
+    restart: $APP_CONTAINER_RESTART
+    depends_on:
+      - db
+    mem_limit: $MEM_RAM_CONTAINER_LIMIT
+    logging:
+      driver: "json-file"
+      options:
+        max-size: $APP_LOGGING_MAX_SIZE
+    environment:
+      TZ: $APP_TIME_ZONE
+      DB_PROJECT_PASSWORD: $DB_PROJECT_PASSWORD
+      PROJECT_NAME: $PROJECT_NAME
+      APP_SERVER_HOST: $APP_SERVER_HOST
+      APP_SERVER_PORT: $APP_SERVER_PORT
+      BD_PROJECT_URL: $BD_PROJECT_URL
+      DB_R2DBC_DRIVER_CLASS_NAME: $DB_R2DBC_DRIVER_CLASS_NAME
+      FLYWAY_ENABLED: $FLYWAY_ENABLED
+      FLYWAY_BASELINE_ON_MIGRATE: $FLYWAY_BASELINE_ON_MIGRATE
+      DB_PROJECT_USERNAME: $DB_PROJECT_USERNAME
+      APP_TIME_ZONE: $APP_TIME_ZONE
+    cpuset: $CPU_SET_CONTAINER
+    ports:
+      - "${APP_CONTAINER_EXTERNAL_PORT}:${APP_SERVER_PORT}"
+    networks:
+      - app-network
+
+  db:
+    container_name: "db-${PROJECT_NAME}"
+    image: postgres:14.1
+    restart: $DB_CONTAINER_RESTART
+    shm_size: $DB_SHM_SIZE
+    ports:
+      - "${DB_CONTAINER_EXTERNAL_PORT}:${DB_INTERNAL_PORT}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: $DB_LOGGING_MAX_SIZE
+    environment:
+      TZ: $APP_TIME_ZONE
+      PGTZ: $APP_TIME_ZONE
+      POSTGRES_PASSWORD: $DB_PROJECT_PASSWORD
+    volumes:
+      - volume_app_database:/var/lib/postgresql
+      - volume_app_database_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    name: "network-${PROJECT_NAME}"
+
+volumes:
+  volume_app_database:
+    name: "volume-db-${PROJECT_NAME}"
+  volume_app_database_data:
+    name: "volume-db-data-${PROJECT_NAME}"
+
+
